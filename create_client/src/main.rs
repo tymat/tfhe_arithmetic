@@ -2,17 +2,23 @@
 #![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 
 use tfhe::library::Client;
+use std::env;
+
 
 fn main() {
-    let client =  Client::new(123123108858989285289828398u128);
-    println!("Generating a new seed");
-
-    let client_file = "client.json";
-
-    println!("Writing client.json");
-
-    let _ = std::fs::write(
-        client_file,
-        serde_json::to_string_pretty(&client).unwrap(),
-    );
+    let args: Vec<String> = env::args().collect();
+    match args[1].clone().parse::<u128>() {
+       Ok(x) => {
+           let client =  Client::new(x.clone());
+           let client_file = "client.json";
+           println!("Writing {}", client_file);
+           let _ = std::fs::write(
+               client_file,
+               serde_json::to_string_pretty(&client).unwrap(),
+           );
+       }
+       Err(e) => {
+           println!("Error in seed number: {}", e);
+       }
+    }
 }
