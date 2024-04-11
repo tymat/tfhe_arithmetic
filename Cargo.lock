@@ -102,6 +102,18 @@ dependencies = [
 [[package]]
 name = "create_client"
 version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "tfhe 0.1.0",
+]
+
+[[package]]
+name = "create_request"
+version = "0.1.0"
+dependencies = [
+ "serde_json",
+ "tfhe 0.1.0",
+]
 
 [[package]]
 name = "crossbeam-deque"
@@ -352,6 +364,17 @@ dependencies = [
 
 [[package]]
 name = "tfhe"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "bincode",
+ "serde",
+ "serde_json",
+ "tfhe 0.6.0",
+]
+
+[[package]]
+name = "tfhe"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4cb3415b8d85ca6e6a8a1cec78f346dd42f3fe7e2205c7f2fa50ff1887892a91"
@@ -368,17 +391,6 @@ dependencies = [
  "rand_core",
  "rayon",
  "serde",
-]
-
-[[package]]
-name = "thfe_library"
-version = "0.1.0"
-dependencies = [
- "base64",
- "bincode",
- "serde",
- "serde_json",
- "tfhe",
 ]
 
 [[package]]
