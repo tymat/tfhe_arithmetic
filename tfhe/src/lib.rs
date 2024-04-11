@@ -41,13 +41,10 @@ pub mod library {
             match File::open(json_file_path) {
                 Ok(x) => {
                     let reader = BufReader::new(x);
-                    match serde_json::from_reader(reader) {
-                        Ok(u) => u,
-                        Err(_) => {
-                            println!("Parse Error");
-                            Client::new(12345678910)
-                        }
-                    }
+                    serde_json::from_reader(reader).unwrap_or_else(|_| {
+                        println!("Parse Error");
+                        Client::new(12345678910)
+                    })
                 }
                 Err(e) => {
                     println!("Error {}", e);
