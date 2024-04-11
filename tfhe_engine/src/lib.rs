@@ -57,23 +57,18 @@ pub mod library {
     }
 
     impl ResponsePayload {
-
         pub fn load_json_file(path: String) -> ResponsePayload {
             unimplemented!()
         }
         pub fn reveal_answer(&self, client_key: ClientKey) {
-            let answer_bin = general_purpose::STANDARD
-                .decode(&self.answer_b64)
-                .unwrap();
+            let answer_bin = general_purpose::STANDARD.decode(&self.answer_b64).unwrap();
 
             let fheu32_answer: FheUint32 = bincode::deserialize(&answer_bin[..]).unwrap();
             let answer: u32 = fheu32_answer.decrypt(&client_key);
 
             println!("answer = {}", answer)
         }
-
     }
-
 
     impl RequestPayload {
         pub fn new(operation: u32, client_key: ClientKey, args: Vec<u32>) -> RequestPayload {
@@ -109,18 +104,16 @@ pub mod library {
                         .decode(&self.server_key_b64)
                         .unwrap();
 
-                    let compressed_server_key: CompressedServerKey = bincode::deserialize(&server_key_bin[..]).unwrap();
+                    let compressed_server_key: CompressedServerKey =
+                        bincode::deserialize(&server_key_bin[..]).unwrap();
 
                     let server_key = compressed_server_key.decompress();
                     set_server_key(server_key.clone());
 
-
                     let mut fheu32_args: Vec<FheUint32> = Vec::new();
 
                     for i in self.args.iter() {
-                        let item = general_purpose::STANDARD
-                            .decode(&i)
-                            .unwrap();
+                        let item = general_purpose::STANDARD.decode(&i).unwrap();
                         let fheu32_item: FheUint32 = bincode::deserialize(&*item).unwrap();
                         fheu32_args.push(fheu32_item);
                     }
@@ -129,8 +122,6 @@ pub mod library {
 
                     let answer_bytes = bincode::serialize(&answer.clone()).unwrap();
                     let answer_b64 = general_purpose::STANDARD.encode(&answer_bytes);
-
-                    println!("answer bytes = {}", answer_b64);
 
                     ResponsePayload {
                         operation: self.operation,

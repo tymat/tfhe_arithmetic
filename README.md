@@ -56,12 +56,29 @@ TODO
 
 ### Starting the secret arithmetic server
 
+Open a new terminal window or tab
+
+```shell
+target/release/arithmetic_server 
+```
+
+### Creating a request
+
+#### Addition 
+
+```shell
+create_request client.json 1 32901 99021
+```
 TODO
 
-### Sending request
+### Sending the request
 
-TODO
+```shell
+curl -X POST -H "Content-Type: application/json" -d @request.json http://localhost:3000/job -o answer.json
+```
 
 ### Decrypting the answer
 
-TODO
+```shell
+ target/release/reveal_answer answer.json client.json
+```
