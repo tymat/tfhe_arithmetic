@@ -1,5 +1,5 @@
 [workspace]
 resolver = "2"
-members = ["tfhe", "create_client", "create_request"]
+members = ["tfhe", "create_client", "create_request", "arithmetic_server"]
 
 [workspace.dependencies]
