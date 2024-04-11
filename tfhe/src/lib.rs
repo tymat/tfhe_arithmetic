@@ -10,8 +10,9 @@ pub mod library {
     use base64::{engine::general_purpose, Engine as _};
     use std::collections::hash_map::Iter;
     use std::fs::File;
-    use std::io::BufWriter;
+    use std::io::{BufReader, BufWriter};
     use std::iter::Map;
+    use std::path::Path;
     use std::time::Instant;
     use serde_json::Result;
 
@@ -29,6 +30,28 @@ pub mod library {
             let client_key_b64 = general_purpose::STANDARD.encode(&ck_serialized);
 
             Client { client_key_b64: client_key_b64 }
+        }
+
+        // TODO
+        pub fn from_json(json_file: String) -> Client {
+            let json_file_path = Path::new(json_file.as_str());
+            match File::open(json_file_path) {
+                Ok(x) => {
+                    let reader = BufReader::new(x);
+                    match serde_json::from_reader(reader) {
+                        Ok(u) => { u }
+                        Err(_) => {
+                            println!("Parse Error");
+                            Client::new(12345678910)
+                        }
+                    }
+                }
+                Err(e) => {
+                    println!("Error {}", e);
+                    Client::new(12345678910)
+                }
+            }
+
         }
 
         pub fn key(&self) -> ClientKey {
