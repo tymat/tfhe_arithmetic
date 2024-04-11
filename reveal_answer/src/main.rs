@@ -1,9 +1,7 @@
 use std::env;
 use std::fs::File;
 use std::io::BufReader;
-use std::path::Path;
-use tfhe::set_server_key;
-use tfhe::{ClientKey, CompressedServerKey, ConfigBuilder, FheUint16, FheUint32, Seed, ServerKey};
+use tfhe::ClientKey;
 use tfhe_engine::library::{Client, ResponsePayload};
 
 fn main() {
