@@ -10,6 +10,15 @@ This is a reference implementation that demonstrates the key generation and FHE 
 
 ## Usage
 
+In this scenario we will have Alice and Bob 
+
+| Name  | Role       | 
+|-------|------------|
+| Alice | Client     |
+| Bob   | Server     |
+
+Alice wants to add two secret numbers `a` and `b`
+
 ### Building
 
 Install Rust development environment 
@@ -20,6 +29,7 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 ### Generating client keys
 
+As Alice generate a new client key with a `seed` 
 
 ```shell
 target/release/create_client <seed>
@@ -56,6 +66,8 @@ TODO
 
 ### Starting the secret arithmetic server
 
+As Bob
+
 Open a new terminal window or tab
 
 ```shell
@@ -66,19 +78,32 @@ target/release/arithmetic_server
 
 #### Addition 
 
+As Alice create a new addition `opcode 1` request using her private key `client.json`
+
+This will:
+
+1. Encrypt the values `32901` and `99021` 
+2. Generate a new `ServerKey` 
+3. Creates the `request.json` payload which contains the encrypted values, the server key, and the encrypted values.
+
 ```shell
 create_request client.json 1 32901 99021
 ```
-TODO
 
 ### Sending the request
+
+Alice does an `HTTP POST` with the `request.json` to Bob's server running on `https://127.0.0.1:3000`
 
 ```shell
 curl -X POST -H "Content-Type: application/json" -d @request.json http://localhost:3000/job -o answer.json
 ```
 
+This generates an output `answer.json`
+
 ### Decrypting the answer
 
+
+Alice can get the answer by decrypting the `answer.json` with her private key `client.json`
 ```shell
  target/release/reveal_answer answer.json client.json
 ```
