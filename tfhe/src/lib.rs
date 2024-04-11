@@ -30,9 +30,7 @@ pub mod library {
             let ck_serialized = bincode::serialize(&client_key).unwrap();
             let client_key_b64 = general_purpose::STANDARD.encode(&ck_serialized);
 
-            Client {
-                client_key_b64,
-            }
+            Client { client_key_b64 }
         }
 
         // TODO
@@ -112,10 +110,18 @@ pub mod library {
 
         pub fn exec(&self) -> ResponsePayload {
             match self.operation {
-                1 => { ResponsePayload { operation: 32, answer_b64: "abcd".to_string(), args: vec!["abc".to_string(), "def".to_string()]}}
+                1 => ResponsePayload {
+                    operation: self.operation,
+                    answer_b64: "abcd".to_string(),
+                    args: self.clone().args
+                },
                 _ => {
                     println!("Unsupported opcode");
-                    ResponsePayload { operation: 32, answer_b64: "wrong".to_string(), args: vec!["abc".to_string(), "def".to_string()]}
+                    ResponsePayload {
+                        operation: 32,
+                        answer_b64: "wrong".to_string(),
+                        args: vec!["abc".to_string(), "def".to_string()],
+                    }
                 }
             }
         }
