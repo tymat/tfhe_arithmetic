@@ -61,7 +61,7 @@ pub mod library {
             ).collect();
 
             RequestPayload {
-                operation: 32,
+                operation,
                 server_key_b64,
                 args: encrypted_args
             }
