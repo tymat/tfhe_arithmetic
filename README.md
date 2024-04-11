@@ -107,3 +107,9 @@ Alice can get the answer by decrypting the `answer.json` with her private key `c
 ```shell
  target/release/reveal_answer answer.json client.json
 ```
+
+If all goes well then this should output:
+
+```bash
+answer = 131922
+```
