@@ -2,6 +2,9 @@
 name = "create_request"
 version = "0.1.0"
 edition = "2021"
+authors = ["Anthony Eufemio <tymat@pris.im>"]
+license = "BSD-3"
+
 
 [dependencies]
 tfhe = {path = "../tfhe/", version = "0.1.0"}

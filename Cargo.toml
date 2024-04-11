@@ -2,5 +2,4 @@
 resolver = "2"
 members = ["tfhe", "create_client", "create_request"]
 
-
 [workspace.dependencies]
