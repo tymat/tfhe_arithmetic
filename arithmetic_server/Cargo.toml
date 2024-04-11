@@ -10,4 +10,4 @@ serde = { version = "1.0", features = ["derive"] }
 rand = "0.8"
 serde_yaml = "0.9"
 thiserror = "1.0"
-tfhe = {path = "../tfhe/", version = "0.1.0"}
+tfhe_engine = {path = "../tfhe_engine/", version = "0.1.0"}

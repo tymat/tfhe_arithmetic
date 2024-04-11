@@ -2,7 +2,7 @@
 #![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
 
 use std::env;
-use tfhe::library::Client;
+use tfhe_engine::library::Client;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

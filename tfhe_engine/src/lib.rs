@@ -33,24 +33,6 @@ pub mod library {
             Client { client_key_b64 }
         }
 
-        // TODO
-        pub fn from_json(json_file: String) -> Client {
-            let json_file_path = Path::new(json_file.as_str());
-            match File::open(json_file_path) {
-                Ok(x) => {
-                    let reader = BufReader::new(x);
-                    serde_json::from_reader(reader).unwrap_or_else(|_| {
-                        println!("Parse Error");
-                        Client::new(12345678910)
-                    })
-                }
-                Err(e) => {
-                    println!("Error {}", e);
-                    Client::new(12345678910)
-                }
-            }
-        }
-
         pub fn key(&self) -> ClientKey {
             let ck_serialized = general_purpose::STANDARD
                 .decode(&self.client_key_b64)
@@ -75,15 +57,23 @@ pub mod library {
     }
 
     impl ResponsePayload {
-        pub fn new() -> ResponsePayload {
-            let temp_string = vec!["abc".to_string(), "def".to_string()];
-            ResponsePayload {
-                operation: 114,
-                args: temp_string,
-                answer_b64: "hello world".to_string(),
-            }
+
+        pub fn load_json_file(path: String) -> ResponsePayload {
+            unimplemented!()
         }
+        pub fn reveal_answer(&self, client_key: ClientKey) {
+            let answer_bin = general_purpose::STANDARD
+                .decode(&self.answer_b64)
+                .unwrap();
+
+            let fheu32_answer: FheUint32 = bincode::deserialize(&answer_bin[..]).unwrap();
+            let answer: u32 = fheu32_answer.decrypt(&client_key);
+
+            println!("answer = {}", answer)
+        }
+
     }
+
 
     impl RequestPayload {
         pub fn new(operation: u32, client_key: ClientKey, args: Vec<u32>) -> RequestPayload {
@@ -110,11 +100,44 @@ pub mod library {
 
         pub fn exec(&self) -> ResponsePayload {
             match self.operation {
-                1 => ResponsePayload {
-                    operation: self.operation,
-                    answer_b64: "abcd".to_string(),
-                    args: self.clone().args
-                },
+                1 => {
+                    let builder = ConfigBuilder::default();
+
+                    let config = builder.build();
+
+                    let server_key_bin = general_purpose::STANDARD
+                        .decode(&self.server_key_b64)
+                        .unwrap();
+
+                    let compressed_server_key: CompressedServerKey = bincode::deserialize(&server_key_bin[..]).unwrap();
+
+                    let server_key = compressed_server_key.decompress();
+                    set_server_key(server_key.clone());
+
+
+                    let mut fheu32_args: Vec<FheUint32> = Vec::new();
+
+                    for i in self.args.iter() {
+                        let item = general_purpose::STANDARD
+                            .decode(&i)
+                            .unwrap();
+                        let fheu32_item: FheUint32 = bincode::deserialize(&*item).unwrap();
+                        fheu32_args.push(fheu32_item);
+                    }
+
+                    let answer = fheu32_args[0].clone() + fheu32_args[1].clone();
+
+                    let answer_bytes = bincode::serialize(&answer.clone()).unwrap();
+                    let answer_b64 = general_purpose::STANDARD.encode(&answer_bytes);
+
+                    println!("answer bytes = {}", answer_b64);
+
+                    ResponsePayload {
+                        operation: self.operation,
+                        answer_b64,
+                        args: self.clone().args,
+                    }
+                }
                 _ => {
                     println!("Unsupported opcode");
                     ResponsePayload {

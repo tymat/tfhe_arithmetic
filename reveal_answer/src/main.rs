@@ -1,23 +1,49 @@
-#![feature(unwrap_infallible)]
-#![cfg_attr(debug_assertions, allow(dead_code, unused_imports))]
-
 use std::env;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
-use tfhe_engine::library::{Client, RequestPayload};
+use tfhe_engine::library::{ResponsePayload, Client };
+use tfhe::set_server_key;
+use tfhe::{
+    ClientKey, CompressedServerKey, ConfigBuilder, FheUint16, FheUint32, Seed, ServerKey,
+};
 
 fn main() {
-    // create_request <client_key> <opcode> <value-1> <value-2> ... <value-n>
-    // create_request client.json 1 3909090 409234909
+
     let args: Vec<String> = env::args().collect();
+    let json_file_path = args[1].clone();
+    let client_key_path = args[2].clone();
 
-    // Deserialize `client.json`
+    match File::open(json_file_path) {
+        Ok(x) => {
+            let reader = BufReader::new(x);
+            match serde_json::from_reader::<BufReader<File>, ResponsePayload>(reader) {
+                Ok(y) => {
+                    match File::open(client_key_path) {
+                        Ok(z) => {
+                            let reader = BufReader::new(z);
+                            match serde_json::from_reader::<BufReader<File>, Client>(reader) {
+                                Ok(c) => {
+                                    println!("{:?}", c);
+                                    let client_key: ClientKey = c.key();
+                                    y.reveal_answer(client_key);
+                                }
+                                Err(_) => {
 
-    // Temporary this should be read from the client.json
-    //let client = Client::new(123123108858989285289828398u128);
+                                }
+                            }
+                        }
+                        Err(_) => {}
+                    }
+                }
+                Err(_) => {}
+            }
+        }
+        Err(_) => {}
+    }
 
-    match args[2].clone().parse::<u32>() {
+  /*
+     match args[2].clone().parse::<u32>() {
         Ok(op) => {
             println!("Opcode {}", op);
             let json_file_path = Path::new(args[1].as_str());
@@ -51,4 +77,7 @@ fn main() {
             println!("Unsupported opcode")
         }
     }
+}
+   */
+    println!("Hello, world!");
 }

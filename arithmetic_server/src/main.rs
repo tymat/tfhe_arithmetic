@@ -5,14 +5,16 @@ use axum::{
     Json,
     Router,
 };
+use axum::extract::DefaultBodyLimit;
 //use tokio::{sync::RwLock, fs::File, io::AsyncReadExt};
-use tfhe::library::{RequestPayload, ResponsePayload};
+use tfhe_engine::library::{RequestPayload, ResponsePayload};
 
 #[tokio::main]
 
 async fn main() {
     println!("Starting server");
-    let app = Router::new().route("/job", post(process_request));
+    let app = Router::new().route("/job", post(process_request))
+        .layer(DefaultBodyLimit::max(500000000));
 
     axum::Server::bind(&"127.0.0.1:3000".parse().unwrap())
         .serve(app.into_make_service())
@@ -23,8 +25,6 @@ async fn main() {
 async fn process_request(
     extract::Json(payload): extract::Json<RequestPayload>,
 ) -> Json<ResponsePayload> {
-    println!("{:?}", payload);
     let response = payload.exec();
-    println!("{:?}", response.clone());
     Json(response)
 }
