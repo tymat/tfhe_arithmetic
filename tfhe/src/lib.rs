@@ -31,7 +31,7 @@ pub mod library {
             let client_key_b64 = general_purpose::STANDARD.encode(&ck_serialized);
 
             Client {
-                client_key_b64: client_key_b64,
+                client_key_b64,
             }
         }
 
@@ -64,9 +64,9 @@ pub mod library {
 
     #[derive(Serialize, Deserialize, Debug, Clone)]
     pub struct RequestPayload {
-        operation: u32,
-        server_key_b64: String,
-        args: Vec<String>,
+        pub operation: u32,
+        pub server_key_b64: String,
+        pub args: Vec<String>,
     }
 
     #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -110,11 +110,12 @@ pub mod library {
             }
         }
 
-        pub fn exec(&self) {
+        pub fn exec(&self) -> ResponsePayload {
             match self.operation {
-                1 => {}
+                1 => { ResponsePayload { operation: 32, answer_b64: "abcd".to_string(), args: vec!["abc".to_string(), "def".to_string()]}}
                 _ => {
-                    println!("Unsupported opcode")
+                    println!("Unsupported opcode");
+                    ResponsePayload { operation: 32, answer_b64: "wrong".to_string(), args: vec!["abc".to_string(), "def".to_string()]}
                 }
             }
         }

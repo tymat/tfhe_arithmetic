@@ -22,13 +22,19 @@ async fn main() {
 
 async fn process_request(
     extract::Json(payload): extract::Json<RequestPayload>,
-) -> impl IntoResponse {
+) -> Json<ResponsePayload> {
     println!("{:?}", payload);
+
+
     let temp_string = vec!["abc".to_string(), "def".to_string()];
-    Json(ResponsePayload {
-        operation: 69,
-        args: temp_string,
+    /*
+    (axum::http::StatusCode::INTERNAL_SERVER_ERROR, Json(ResponsePayload {
+        operation: payload.operation,
+        args: payload.args,
         answer_b64: "hello world".to_string(),
-    })
-    .into_response();
+    }))
+    .into_response()
+     */
+    let response = ResponsePayload { operation: payload.operation, args: payload.args, answer_b64: "hello world".to_string()};
+    Json(response)
 }
