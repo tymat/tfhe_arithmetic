@@ -8,14 +8,7 @@ use std::path::Path;
 use tfhe_engine::library::{Client, RequestPayload};
 
 fn main() {
-    // create_request <client_key> <opcode> <value-1> <value-2> ... <value-n>
-    // create_request client.json 1 3909090 409234909
     let args: Vec<String> = env::args().collect();
-
-    // Deserialize `client.json`
-
-    // Temporary this should be read from the client.json
-    //let client = Client::new(123123108858989285289828398u128);
 
     match args[2].clone().parse::<u32>() {
         Ok(op) => {
