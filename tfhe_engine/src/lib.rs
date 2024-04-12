@@ -11,8 +11,10 @@ pub mod library {
     use std::iter::Map;
     use std::path::Path;
     use std::time::Instant;
-    use tfhe::prelude::{FheDecrypt, FheEncrypt, FheTryEncrypt, OverflowingAdd, OverflowingSub, OverflowingMul};
-    use tfhe::{FheBool, FheUint, set_server_key};
+    use tfhe::prelude::{
+        FheDecrypt, FheEncrypt, FheTryEncrypt, OverflowingAdd, OverflowingMul, OverflowingSub,
+    };
+    use tfhe::{set_server_key, FheBool, FheUint};
     use tfhe::{
         ClientKey, CompressedServerKey, ConfigBuilder, FheUint16, FheUint32, Seed, ServerKey,
     };
@@ -26,9 +28,7 @@ pub mod library {
         let builder = ConfigBuilder::default();
         let config = builder.build();
 
-        let server_key_bin = general_purpose::STANDARD
-            .decode(server_key_b64)
-            .unwrap();
+        let server_key_bin = general_purpose::STANDARD.decode(server_key_b64).unwrap();
 
         let compressed_server_key: CompressedServerKey =
             bincode::deserialize(&server_key_bin[..]).unwrap();
@@ -54,9 +54,7 @@ pub mod library {
         result_b64
     }
 
-
-
-    pub fn parse_arguments_as_fheuint32(arguments: Vec<String>) -> Vec<FheUint32>{
+    pub fn parse_arguments_as_fheuint32(arguments: Vec<String>) -> Vec<FheUint32> {
         let mut fheu32_args: Vec<FheUint32> = Vec::new();
 
         for i in arguments.iter() {
@@ -67,9 +65,7 @@ pub mod library {
         fheu32_args
     }
 
-
-
-    pub fn decode_fheuint32_value(b64_value: String)  {}
+    pub fn decode_fheuint32_value(b64_value: String) {}
 
     impl Client {
         pub fn new(seed: u128) -> Client {
@@ -198,7 +194,6 @@ pub mod library {
                         operation: self.operation,
                         answer_b64,
                         args: self.clone().args,
-
                     }
                 }
 
